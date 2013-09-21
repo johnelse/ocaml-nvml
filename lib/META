@@ -1,0 +1,8 @@
+version = "0.1.0"
+description = "OCaml bindings to the NVIDIA management library"
+requires = "ctypes.foreign"
+archive(byte) = "nvml.cma"
+archive(byte, plugin) = "nvml.cma"
+archive(native) = "nvml.cmxa"
+archive(native, plugin) = "nvml.cmxs"
+exists_if = "nvml.cma"

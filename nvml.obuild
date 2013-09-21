@@ -1,0 +1,9 @@
+name: nvml
+version: 0.1.0
+synopsis: OCaml bindings to the NVIDIA management library
+obuild-ver: 1
+
+library nvml
+  src-dir: lib
+  modules: nvml
+  build-deps: ctypes.foreign
