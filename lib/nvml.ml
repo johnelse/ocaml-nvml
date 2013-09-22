@@ -12,3 +12,8 @@ end
 
 let init = foreign ~from:libnvml "nvmlInit" (void @-> returning int)
 let shutdown = foreign ~from:libnvml "nvmlShutdown" (void @-> returning int)
+
+module Device = struct
+	let get_count = foreign ~from:libnvml "nvmlDeviceGetCount"
+		(ptr uint @-> returning int)
+end
