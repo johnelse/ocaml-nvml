@@ -62,7 +62,7 @@ let check_error f =
 	| 15 -> fail GPU_is_lost
 	| _ -> fail Unknown
 
-let string_of_error error =
+let string_of_error ~error =
 	let string_of_error' =
 		foreign ~from:libnvml "nvmlErrorString" (int @-> returning string)
 	in
