@@ -1,5 +1,6 @@
 open Ctypes
 open Foreign
+open Unsigned
 
 let libnvml = Dl.dlopen ~filename:"libnvidia-ml.so" ~flags:[Dl.RTLD_LAZY]
 
@@ -84,12 +85,29 @@ module Device = struct
 	let handle = t *:* uint64_t
 	let () = seal t
 
-	let get_count = foreign ~from:libnvml "nvmlDeviceGetCount"
-		(ptr uint @-> returning int)
+	let get_count () =
+		let get_count' =
+			foreign ~from:libnvml "nvmlDeviceGetCount" (ptr uint @-> returning int)
+		in
+		let count_ptr = allocate uint (UInt.of_int 0) in
+		check_error (fun () -> get_count' count_ptr);
+		!@ count_ptr
 
-	let get_handle_by_index = foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
-		(uint @-> ptr t @-> returning int)
+	let get_handle_by_index index =
+		let get_handle_by_index' =
+			foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
+				(uint @-> ptr t @-> returning int)
+		in
+		let device = make t in
+		check_error (fun () -> get_handle_by_index' index (addr device));
+		device
 
-	let get_fan_speed = foreign ~from:libnvml "nvmlDeviceGetFanSpeed"
-		(t @-> ptr uint @-> returning int)
+	let get_fan_speed device =
+		let get_fan_speed' =
+			foreign ~from:libnvml "nvmlDeviceGetFanSpeed"
+				(t @-> ptr uint @-> returning int)
+		in
+		let fan_speed_ptr = allocate uint (UInt.of_int 0) in
+		check_error (fun () -> get_fan_speed' device fan_speed_ptr);
+		!@ fan_speed_ptr
 end
