@@ -95,7 +95,7 @@ module Device = struct
 	let () = seal t
 
 	(* Bindings to the C functions. *)
-	module F = struct
+	module Foreign = struct
 		let get_count =
 			foreign ~from:libnvml "nvmlDeviceGetCount" (ptr uint @-> returning int)
 
@@ -139,28 +139,29 @@ module Device = struct
 	(* Functions exposed to the interface. *)
 	let get_count () =
 		let count_ptr = allocate uint (UInt.of_int 0) in
-		check_error (fun () -> F.get_count count_ptr);
+		check_error (fun () -> Foreign.get_count count_ptr);
 		!@ count_ptr
 
 	let get_fan_speed ~device =
-		get_uint_generic ~device ~foreign_fn:F.get_fan_speed
+		get_uint_generic ~device ~foreign_fn:Foreign.get_fan_speed
 
 	let get_handle_by_index ~index =
 		let device = make t in
-		check_error (fun () -> F.get_handle_by_index index (addr device));
+		check_error (fun () -> Foreign.get_handle_by_index index (addr device));
 		device
 
 	let get_name ~device =
-		get_string_generic ~device ~foreign_fn:F.get_name ~length:64
+		get_string_generic ~device ~foreign_fn:Foreign.get_name ~length:64
 
 	let get_power_usage ~device =
-		get_uint_generic ~device ~foreign_fn:F.get_power_usage
+		get_uint_generic ~device ~foreign_fn:Foreign.get_power_usage
 
 	let get_uuid ~device =
-		get_string_generic ~device ~foreign_fn:F.get_uuid ~length:80
+		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:80
 
 	let on_same_board ~device1 ~device2 =
 		let on_same_board_ptr = allocate int 0 in
-		check_error (fun () -> F.on_same_board device1 device2 on_same_board_ptr);
+		check_error
+			(fun () -> Foreign.on_same_board device1 device2 on_same_board_ptr);
 		(!@ on_same_board_ptr) <> 0
 end
