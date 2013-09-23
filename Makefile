@@ -1,5 +1,5 @@
 dist/build/lib-nvml/nvml.cmxa:
-	obuild configure
+	obuild configure --enable-tests
 	obuild build
 
 install:
@@ -16,4 +16,4 @@ clean:
 	rm -rf dist
 
 test:
-	obuild test
+	obuild test --output
