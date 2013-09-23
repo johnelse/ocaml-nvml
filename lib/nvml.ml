@@ -77,12 +77,16 @@ module Util = struct
 	let string_of_char_array array =
 		let buf = Buffer.create 64 in
 		let rec aux array index =
-			let c = Array.get array index in
-			if c = '\000'
+			if index >= Array.length array
 			then Buffer.contents buf
 			else begin
-				Buffer.add_char buf c;
-				aux array (index + 1)
+				let c = Array.get array index in
+				if c = '\000'
+				then Buffer.contents buf
+				else begin
+					Buffer.add_char buf c;
+					aux array (index + 1)
+				end
 			end
 		in
 		aux array 0
