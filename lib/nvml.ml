@@ -119,6 +119,12 @@ module Device = struct
 				(t @-> t @-> ptr int @-> returning int)
 	end
 
+	let get_string_generic ~device ~foreign_fn ~length =
+		let char_array = Array.make char length in
+		let char_ptr = Array.start char_array in
+		check_error (fun () -> foreign_fn device char_ptr (UInt.of_int length));
+		Util.string_of_char_array char_array
+
 	let get_count () =
 		let count_ptr = allocate uint (UInt.of_int 0) in
 		check_error (fun () -> F.get_count count_ptr);
@@ -135,11 +141,7 @@ module Device = struct
 		device
 
 	let get_name ~device =
-		let length = 64 in
-		let name_array = Array.make char length in
-		let name_ptr = Array.start name_array in
-		check_error (fun () -> F.get_name device name_ptr (UInt.of_int length));
-		Util.string_of_char_array name_array
+		get_string_generic ~device ~foreign_fn:F.get_name ~length:64
 
 	let get_power_usage ~device =
 		let power_usage_ptr = allocate uint (UInt.of_int 0) in
