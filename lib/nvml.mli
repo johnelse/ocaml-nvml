@@ -39,6 +39,8 @@ module Device : sig
 
 	val get_power_usage : device:t Ctypes.structure -> Unsigned.uint
 
+	val get_serial : device:t Ctypes.structure -> string
+
 	val get_uuid : device:t Ctypes.structure -> string
 
 	val on_same_board : device1:t Ctypes.structure ->

@@ -121,6 +121,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
 				(t @-> ptr uint @-> returning int)
 
+		let get_serial =
+			foreign ~from:libnvml "nvmlDeviceGetSerial"
+				(t @-> ptr char @-> uint @-> returning int)
+
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
 				(t @-> ptr char @-> uint @-> returning int)
@@ -161,6 +165,9 @@ module Device = struct
 
 	let get_power_usage ~device =
 		get_uint_generic ~device ~foreign_fn:Foreign.get_power_usage
+
+	let get_serial ~device =
+		get_string_generic ~device ~foreign_fn:Foreign.get_serial ~length:30
 
 	let get_uuid ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:80
