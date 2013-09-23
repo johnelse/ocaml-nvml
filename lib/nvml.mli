@@ -28,7 +28,6 @@ val shutdown : unit -> unit
 
 module Device : sig
 	type t
-	val t : t structure typ
 
 	val get_count : unit -> Unsigned.uint
 
