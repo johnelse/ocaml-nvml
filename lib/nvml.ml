@@ -110,4 +110,13 @@ module Device = struct
 		let device = make t in
 		check_error (fun () -> get_handle_by_index' index (addr device));
 		device
+
+	let get_power_usage ~device =
+		let get_power_usage' =
+			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
+				(t @-> ptr uint @-> returning int)
+		in
+		let power_usage_ptr = allocate uint (UInt.of_int 0) in
+		check_error (fun () -> get_power_usage' device power_usage_ptr);
+		!@ power_usage_ptr
 end

@@ -34,4 +34,6 @@ module Device : sig
 	val get_fan_speed : device:t Ctypes.structure -> Unsigned.uint
 
 	val get_handle_by_index : index:Unsigned.uint -> t Ctypes.structure
+
+	val get_power_usage : device:t Ctypes.structure -> Unsigned.uint
 end
