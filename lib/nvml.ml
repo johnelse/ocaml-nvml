@@ -119,4 +119,13 @@ module Device = struct
 		let power_usage_ptr = allocate uint (UInt.of_int 0) in
 		check_error (fun () -> get_power_usage' device power_usage_ptr);
 		!@ power_usage_ptr
+
+	let on_same_board ~device1 ~device2 =
+		let on_same_board' =
+			foreign ~from:libnvml "nvmlDeviceOnSameBoard"
+				(t @-> t @-> ptr int @-> returning int)
+		in
+		let on_same_board_ptr = allocate int 0 in
+		check_error (fun () -> on_same_board' device1 device2 on_same_board_ptr);
+		(!@ on_same_board_ptr) <> 0
 end
