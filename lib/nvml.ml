@@ -114,6 +114,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
 				(t @-> ptr uint @-> returning int)
 
+		let get_uuid =
+			foreign ~from:libnvml "nvmlDeviceGetUUID"
+				(t @-> ptr char @-> uint @-> returning int)
+
 		let on_same_board =
 			foreign ~from:libnvml "nvmlDeviceOnSameBoard"
 				(t @-> t @-> ptr int @-> returning int)
@@ -148,6 +152,9 @@ module Device = struct
 
 	let get_power_usage ~device =
 		get_uint_generic ~device ~foreign_fn:F.get_power_usage
+
+	let get_uuid ~device =
+		get_string_generic ~device ~foreign_fn:F.get_uuid ~length:80
 
 	let on_same_board ~device1 ~device2 =
 		let on_same_board_ptr = allocate int 0 in
