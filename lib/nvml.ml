@@ -125,15 +125,18 @@ module Device = struct
 		check_error (fun () -> foreign_fn device char_ptr (UInt.of_int length));
 		Util.string_of_char_array char_array
 
+	let get_uint_generic ~device ~foreign_fn =
+		let uint_ptr = allocate uint (UInt.of_int 0) in
+		check_error (fun () -> foreign_fn device uint_ptr);
+		!@ uint_ptr
+
 	let get_count () =
 		let count_ptr = allocate uint (UInt.of_int 0) in
 		check_error (fun () -> F.get_count count_ptr);
 		!@ count_ptr
 
 	let get_fan_speed ~device =
-		let fan_speed_ptr = allocate uint (UInt.of_int 0) in
-		check_error (fun () -> F.get_fan_speed device fan_speed_ptr);
-		!@ fan_speed_ptr
+		get_uint_generic ~device ~foreign_fn:F.get_fan_speed
 
 	let get_handle_by_index ~index =
 		let device = make t in
@@ -144,9 +147,7 @@ module Device = struct
 		get_string_generic ~device ~foreign_fn:F.get_name ~length:64
 
 	let get_power_usage ~device =
-		let power_usage_ptr = allocate uint (UInt.of_int 0) in
-		check_error (fun () -> F.get_power_usage device power_usage_ptr);
-		!@ power_usage_ptr
+		get_uint_generic ~device ~foreign_fn:F.get_power_usage
 
 	let on_same_board ~device1 ~device2 =
 		let on_same_board_ptr = allocate int 0 in
