@@ -1,4 +1,3 @@
-open Ctypes
 open Unsigned
 
 let () =

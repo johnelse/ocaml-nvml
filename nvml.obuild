@@ -11,4 +11,4 @@ library nvml
 test functional_test
   main: functional_test.ml
   src-dir: test
-  build-deps: ctypes.foreign, nvml
+  build-deps: ctypes, nvml
