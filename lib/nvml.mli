@@ -26,6 +26,15 @@ val init : unit -> unit
 
 val shutdown : unit -> unit
 
+module Memory : sig
+	type t
+	val t : t structure typ
+
+	val total : (Unsigned.ullong, t structure) field
+	val free : (Unsigned.ullong, t structure) field
+	val used : (Unsigned.ullong, t structure) field
+end
+
 module Device : sig
 	type t
 
@@ -34,6 +43,8 @@ module Device : sig
 	val get_fan_speed : device:t Ctypes.structure -> Unsigned.uint
 
 	val get_handle_by_index : index:Unsigned.uint -> t Ctypes.structure
+
+	val get_memory_info : device: t Ctypes.structure -> Memory.t Ctypes.structure
 
 	val get_name : device:t Ctypes.structure -> string
 

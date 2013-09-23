@@ -94,6 +94,15 @@ module Util = struct
 		aux array 0
 end
 
+module Memory = struct
+	type t
+	let t : t structure typ = structure "nvmlMemory_t"
+	let total = t *:* ullong
+	let free = t *:* ullong
+	let used = t *:* ullong
+	let () = seal t
+end
+
 module Device = struct
 	type t
 	let t : t structure typ = structure "nvmlDevice_t"
@@ -112,6 +121,10 @@ module Device = struct
 		let get_handle_by_index =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
 				(uint @-> ptr t @-> returning int)
+
+		let get_memory_info =
+			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
+				(t @-> ptr Memory.t @-> returning int)
 
 		let get_name =
 			foreign ~from:libnvml "nvmlDeviceGetName"
@@ -159,6 +172,11 @@ module Device = struct
 		let device = make t in
 		check_error (fun () -> Foreign.get_handle_by_index index (addr device));
 		device
+
+	let get_memory_info ~device =
+		let memory = make Memory.t in
+		check_error (fun () -> Foreign.get_memory_info device (addr memory));
+		memory
 
 	let get_name ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_name ~length:64
