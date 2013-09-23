@@ -94,6 +94,7 @@ module Device = struct
 	let handle = t *:* uint64_t
 	let () = seal t
 
+	(* Bindings to the C functions. *)
 	module F = struct
 		let get_count =
 			foreign ~from:libnvml "nvmlDeviceGetCount" (ptr uint @-> returning int)
@@ -123,6 +124,7 @@ module Device = struct
 				(t @-> t @-> ptr int @-> returning int)
 	end
 
+	(* Generic calls for common getter patterns. *)
 	let get_string_generic ~device ~foreign_fn ~length =
 		let char_array = Array.make char length in
 		let char_ptr = Array.start char_array in
@@ -134,6 +136,7 @@ module Device = struct
 		check_error (fun () -> foreign_fn device uint_ptr);
 		!@ uint_ptr
 
+	(* Functions exposed to the interface. *)
 	let get_count () =
 		let count_ptr = allocate uint (UInt.of_int 0) in
 		check_error (fun () -> F.get_count count_ptr);
