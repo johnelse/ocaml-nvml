@@ -3,7 +3,17 @@ open Unsigned
 
 let () =
 	Nvml.init ();
-	let device = Nvml.Device.get_handle_by_index ~index:(UInt.of_int 0) in
-	let fan_speed = Nvml.Device.get_fan_speed ~device in
-	Printf.printf "Fan speed = %d\n%!" (UInt.to_int fan_speed);
+	let count = UInt.to_int (Nvml.Device.get_count ()) in
+	Printf.printf "There are %d devices installed.\n" count;
+	for index = 0 to (count - 1) do
+		let device = Nvml.Device.get_handle_by_index ~index:(UInt.of_int index) in
+		let name = Nvml.Device.get_name ~device in
+		let uuid = Nvml.Device.get_uuid ~device in
+		let fan_speed = Nvml.Device.get_fan_speed ~device in
+		Printf.printf "--------------------\n";
+		Printf.printf "Device index = %d\n" index;
+		Printf.printf "Name = %s\n" name;
+		Printf.printf "UUID = %s\n" uuid;
+		Printf.printf "Fan speed = %d\n" (UInt.to_int fan_speed)
+	done;
 	Nvml.shutdown ()
