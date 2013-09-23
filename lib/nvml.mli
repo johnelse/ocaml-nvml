@@ -35,6 +35,8 @@ module Device : sig
 
 	val get_handle_by_index : index:Unsigned.uint -> t Ctypes.structure
 
+	val get_name : device:t Ctypes.structure -> string
+
 	val get_power_usage : device:t Ctypes.structure -> Unsigned.uint
 
 	val on_same_board : device1:t Ctypes.structure ->

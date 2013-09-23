@@ -79,6 +79,21 @@ let shutdown () =
 	in
 	check_error shutdown'
 
+module Util = struct
+	let string_of_char_array array =
+		let buf = Buffer.create 64 in
+		let rec aux array index =
+			let c = Array.get array index in
+			if c = '\000'
+			then Buffer.contents buf
+			else begin
+				Buffer.add_char buf c;
+				aux array (index + 1)
+			end
+		in
+		aux array 0
+end
+
 module Device = struct
 	type t
 	let t : t structure typ = structure "nvmlDevice_t"
@@ -110,6 +125,17 @@ module Device = struct
 		let device = make t in
 		check_error (fun () -> get_handle_by_index' index (addr device));
 		device
+
+	let get_name ~device =
+		let get_name' =
+			foreign ~from:libnvml "nvmlDeviceGetName"
+				(t @-> ptr char @-> uint @-> returning int)
+		in
+		let length = 64 in
+		let name_array = Array.make char length in
+		let name_ptr = Array.start name_array in
+		check_error (fun () -> get_name' device name_ptr (UInt.of_int length));
+		Util.string_of_char_array name_array
 
 	let get_power_usage ~device =
 		let get_power_usage' =
