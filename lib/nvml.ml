@@ -93,7 +93,7 @@ module Device = struct
 		check_error (fun () -> get_count' count_ptr);
 		!@ count_ptr
 
-	let get_handle_by_index index =
+	let get_handle_by_index ~index =
 		let get_handle_by_index' =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
 				(uint @-> ptr t @-> returning int)
@@ -102,7 +102,7 @@ module Device = struct
 		check_error (fun () -> get_handle_by_index' index (addr device));
 		device
 
-	let get_fan_speed device =
+	let get_fan_speed ~device =
 		let get_fan_speed' =
 			foreign ~from:libnvml "nvmlDeviceGetFanSpeed"
 				(t @-> ptr uint @-> returning int)
