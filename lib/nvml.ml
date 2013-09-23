@@ -74,6 +74,8 @@ let shutdown' = foreign ~from:libnvml "nvmlShutdown" (void @-> returning int)
 let shutdown () = check_error shutdown'
 
 module Util = struct
+	(* Extract the contents of the char array into a string. The string will be
+	 * terminated by the first null character, if one is present. *)
 	let string_of_char_array array =
 		let buf = Buffer.create 64 in
 		let rec aux array index =
