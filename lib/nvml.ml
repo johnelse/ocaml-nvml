@@ -68,8 +68,15 @@ let string_of_error error =
 	in
 	string_of_error' (int_of_error error)
 
-let init = foreign ~from:libnvml "nvmlInit" (void @-> returning int)
-let shutdown = foreign ~from:libnvml "nvmlShutdown" (void @-> returning int)
+let init () =
+	let init' = foreign ~from:libnvml "nvmlInit" (void @-> returning int) in
+	check_error init'
+
+let shutdown () =
+	let shutdown' =
+		foreign ~from:libnvml "nvmlShutdown" (void @-> returning int)
+	in
+	check_error shutdown'
 
 module Device = struct
 	type t
