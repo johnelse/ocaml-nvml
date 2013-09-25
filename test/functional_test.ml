@@ -20,6 +20,7 @@ let () =
 		let device = Nvml.Device.get_handle_by_index ~index:(UInt.of_int index) in
 		let name = Nvml.Device.get_name ~device in
 		let uuid = Nvml.Device.get_uuid ~device in
+		let vbios_version = Nvml.Device.get_vbios_version ~device in
 		let fan_speed_opt =
 			try Some (Nvml.Device.get_fan_speed ~device)
 			with Nvml.Error Nvml.Not_supported -> None
@@ -33,6 +34,7 @@ let () =
 		Printf.printf "Device index = %d\n" index;
 		Printf.printf "Name = %s\n" name;
 		Printf.printf "UUID = %s\n" uuid;
+		Printf.printf "VBIOS version = %s\n" vbios_version;
 		Printf.printf "Fan speed = %s\n"
 			(match fan_speed_opt with
 			| Some fan_speed -> (UInt.to_string fan_speed)
