@@ -24,6 +24,10 @@ let () =
 			try Some (Nvml.Device.get_fan_speed ~device)
 			with Nvml.Error Nvml.Not_supported -> None
 		in
+		let temperature =
+			Nvml.Device.get_temperature ~device
+				~sensor_type:Nvml.TemperatureSensors.GPU
+		in
 		let memory = Nvml.Device.get_memory_info ~device in
 		separator ();
 		Printf.printf "Device index = %d\n" index;
@@ -33,6 +37,7 @@ let () =
 			(match fan_speed_opt with
 			| Some fan_speed -> (UInt.to_string fan_speed)
 			| None -> "N/A");
+		Printf.printf "Temperature = %d\n" (UInt.to_int temperature);
 		Printf.printf "Memory total = %d\n"
 			(ULLong.to_int (Ctypes.getf memory Nvml.Memory.total));
 		Printf.printf "Memory free = %d\n"
