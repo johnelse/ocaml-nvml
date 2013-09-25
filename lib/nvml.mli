@@ -71,6 +71,8 @@ module Device : sig
 
 	val get_uuid : device:t Ctypes.structure -> string
 
+	val get_vbios_version : device:t Ctypes.structure -> string
+
 	val on_same_board : device1:t Ctypes.structure ->
 		device2: t Ctypes.structure -> bool
 end

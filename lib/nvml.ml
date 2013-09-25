@@ -200,6 +200,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
 				(t @-> ptr char @-> uint @-> returning int)
 
+		let get_uuid =
+			foreign ~from:libnvml "nvmlDeviceGetVbiosVersion"
+				(t @-> ptr char @-> uint @-> returning int)
+
 		let on_same_board =
 			foreign ~from:libnvml "nvmlDeviceOnSameBoard"
 				(t @-> t @-> ptr int @-> returning int)
@@ -258,6 +262,9 @@ module Device = struct
 
 	let get_uuid ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:80
+
+	let get_vbios_version ~device =
+		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:32
 
 	let on_same_board ~device1 ~device2 =
 		let on_same_board_ptr = allocate int 0 in
