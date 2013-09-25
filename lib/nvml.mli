@@ -56,6 +56,8 @@ module Device : sig
 
 	val get_handle_by_index : index:Unsigned.uint -> t Ctypes.structure
 
+	val get_handle_by_pci_bus_id : pci_bus_id:string -> t Ctypes.structure
+
 	val get_handle_by_uuid : uuid:string -> t Ctypes.structure
 
 	val get_memory_info : device: t Ctypes.structure -> Memory.t Ctypes.structure
