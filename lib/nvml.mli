@@ -44,6 +44,8 @@ module Device : sig
 
 	val get_handle_by_index : index:Unsigned.uint -> t Ctypes.structure
 
+	val get_handle_by_uuid : uuid:string -> t Ctypes.structure
+
 	val get_memory_info : device: t Ctypes.structure -> Memory.t Ctypes.structure
 
 	val get_name : device:t Ctypes.structure -> string

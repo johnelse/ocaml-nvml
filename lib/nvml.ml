@@ -122,6 +122,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
 				(uint @-> ptr t @-> returning int)
 
+		let get_handle_by_uuid =
+			foreign ~from:libnvml "nvmlDeviceGetHandleByUUID"
+				(string @-> ptr t @-> returning int)
+
 		let get_memory_info =
 			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
 				(t @-> ptr Memory.t @-> returning int)
@@ -171,6 +175,11 @@ module Device = struct
 	let get_handle_by_index ~index =
 		let device = make t in
 		check_error (fun () -> Foreign.get_handle_by_index index (addr device));
+		device
+
+	let get_handle_by_uuid ~uuid =
+		let device = make t in
+		check_error (fun () -> Foreign.get_handle_by_uuid uuid (addr device));
 		device
 
 	let get_memory_info ~device =
