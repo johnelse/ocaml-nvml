@@ -139,6 +139,20 @@ module Memory = struct
 	let () = seal t
 end
 
+module TemperatureSensors = struct
+	type t = GPU
+
+	let t =
+		let t_of_int = function
+			| 0 -> GPU
+			| _ -> invalid_arg "TemperatureSensors.t"
+		in
+		let int_of_t = function
+			| GPU -> 0
+		in
+		view ~read:t_of_int ~write:int_of_t int
+end
+
 module Device = struct
 	type t
 	let t : t structure typ = structure "nvmlDevice_t"

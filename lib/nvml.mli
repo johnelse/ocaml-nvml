@@ -43,6 +43,10 @@ module Memory : sig
 	val used : (Unsigned.ullong, t structure) field
 end
 
+module TemperatureSensors : sig
+	type t = GPU
+end
+
 module Device : sig
 	type t
 
