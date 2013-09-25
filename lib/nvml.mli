@@ -66,6 +66,9 @@ module Device : sig
 
 	val get_serial : device:t Ctypes.structure -> string
 
+	val get_temperature : device:t Ctypes.structure ->
+		sensor_type:TemperatureSensors.t -> Unsigned.uint
+
 	val get_uuid : device:t Ctypes.structure -> string
 
 	val on_same_board : device1:t Ctypes.structure ->

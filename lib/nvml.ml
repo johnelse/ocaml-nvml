@@ -192,6 +192,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetSerial"
 				(t @-> ptr char @-> uint @-> returning int)
 
+		let get_temperature =
+			foreign ~from:libnvml "nvmlDeviceGetTemperature"
+				(t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
+
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
 				(t @-> ptr char @-> uint @-> returning int)
@@ -245,6 +249,12 @@ module Device = struct
 
 	let get_serial ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_serial ~length:30
+
+	let get_temperature ~device ~sensor_type =
+		let temperature_ptr = allocate uint (UInt.of_int 0) in
+		check_error
+			(fun () -> Foreign.get_temperature device sensor_type temperature_ptr);
+		!@ temperature_ptr
 
 	let get_uuid ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:80
