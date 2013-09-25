@@ -95,6 +95,7 @@ module Util = struct
 end
 
 module System = struct
+	(* Bindings to the C functions. *)
 	module Foreign = struct
 		let get_driver_version =
 			foreign ~from:libnvml "nvmlSystemGetDriverVersion"
@@ -109,6 +110,7 @@ module System = struct
 				(uint @-> ptr char @-> uint @-> returning int)
 	end
 
+	(* Functions exposed to the interface. *)
 	let get_driver_version () =
 		let char_array = Array.make char 80 in
 		let char_ptr = Array.start char_array in
