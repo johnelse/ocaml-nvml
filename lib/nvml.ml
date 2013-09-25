@@ -94,6 +94,40 @@ module Util = struct
 		aux array 0
 end
 
+module System = struct
+	module Foreign = struct
+		let get_driver_version =
+			foreign ~from:libnvml "nvmlSystemGetDriverVersion"
+				(ptr char @-> uint @-> returning int)
+
+		let get_nvml_version =
+			foreign ~from:libnvml "nvmlSystemGetNVMLVersion"
+				(ptr char @-> uint @-> returning int)
+
+		let get_process_name =
+			foreign ~from:libnvml "nvmlSystemGetProcessName"
+				(uint @-> ptr char @-> uint @-> returning int)
+	end
+
+	let get_driver_version () =
+		let char_array = Array.make char 80 in
+		let char_ptr = Array.start char_array in
+		check_error (fun () -> Foreign.get_driver_version char_ptr (UInt.of_int 80));
+		Util.string_of_char_array char_array
+
+	let get_nvml_version () =
+		let char_array = Array.make char 80 in
+		let char_ptr = Array.start char_array in
+		check_error (fun () -> Foreign.get_nvml_version char_ptr (UInt.of_int 80));
+		Util.string_of_char_array char_array
+
+	let get_process_name ~pid ~length =
+		let char_array = Array.make char (UInt.to_int length) in
+		let char_ptr = Array.start char_array in
+		check_error (fun () -> Foreign.get_process_name pid char_ptr length);
+		Util.string_of_char_array char_array
+end
+
 module Memory = struct
 	type t
 	let t : t structure typ = structure "nvmlMemory_t"

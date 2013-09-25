@@ -26,6 +26,14 @@ val init : unit -> unit
 
 val shutdown : unit -> unit
 
+module System : sig
+	val get_driver_version : unit -> string
+
+	val get_nvml_version : unit -> string
+
+	val get_process_name : pid:Unsigned.uint -> length:Unsigned.uint -> string
+end
+
 module Memory : sig
 	type t
 	val t : t structure typ
