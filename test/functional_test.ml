@@ -3,7 +3,9 @@ open Unsigned
 let () =
 	Nvml.init ();
 	let count = UInt.to_int (Nvml.Device.get_count ()) in
-	Printf.printf "There are %d devices installed.\n" count;
+	(match count with
+	| 1 -> Printf.printf "There is %d device installed.\n" count
+	| _ -> Printf.printf "There are %d devices installed.\n" count);
 	for index = 0 to (count - 1) do
 		let device = Nvml.Device.get_handle_by_index ~index:(UInt.of_int index) in
 		let name = Nvml.Device.get_name ~device in
