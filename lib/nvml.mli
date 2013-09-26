@@ -34,6 +34,14 @@ module System : sig
 	val get_process_name : pid:Unsigned.uint -> length:Unsigned.uint -> string
 end
 
+module ComputeMode : sig
+	type t =
+		| Default
+		| Exclusive_thread
+		| Prohibited
+		| Exclusive_process
+end
+
 module Memory : sig
 	type t
 	val t : t structure typ
@@ -49,6 +57,8 @@ end
 
 module Device : sig
 	type t
+
+	val get_compute_mode : device:t Ctypes.structure -> ComputeMode.t
 
 	val get_count : unit -> Unsigned.uint
 

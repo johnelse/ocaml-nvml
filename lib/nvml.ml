@@ -130,6 +130,30 @@ module System = struct
 		Util.string_of_char_array char_array
 end
 
+module ComputeMode = struct
+	type t =
+		| Default
+		| Exclusive_thread
+		| Prohibited
+		| Exclusive_process
+
+	let t = 
+		let t_of_int = function
+			| 0 -> Default
+			| 1 -> Exclusive_thread
+			| 2 -> Prohibited
+			| 3 -> Exclusive_process
+			| _ -> invalid_arg "ComputeMode.t"
+		in
+		let int_of_t = function
+			| Default -> 0
+			| Exclusive_thread -> 1
+			| Prohibited -> 2
+			| Exclusive_process -> 3
+		in
+		view ~read:t_of_int ~write:int_of_t int
+end
+
 module Memory = struct
 	type t
 	let t : t structure typ = structure "nvmlMemory_t"
@@ -161,6 +185,10 @@ module Device = struct
 
 	(* Bindings to the C functions. *)
 	module Foreign = struct
+		let get_compute_mode =
+			foreign ~from:libnvml "nvmlDeviceGetComputeMode"
+				(t @-> ptr ComputeMode.t @-> returning int)
+
 		let get_count =
 			foreign ~from:libnvml "nvmlDeviceGetCount" (ptr uint @-> returning int)
 
@@ -226,6 +254,11 @@ module Device = struct
 		!@ uint_ptr
 
 	(* Functions exposed to the interface. *)
+	let get_compute_mode ~device =
+		let compute_mode_ptr = allocate ComputeMode.t (ComputeMode.Default) in
+		check_error (fun () -> Foreign.get_compute_mode device compute_mode_ptr);
+		!@ compute_mode_ptr
+
 	let get_count () =
 		let count_ptr = allocate uint (UInt.of_int 0) in
 		check_error (fun () -> Foreign.get_count count_ptr);
