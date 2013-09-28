@@ -70,7 +70,7 @@ module Device : sig
 
 	val get_handle_by_uuid : uuid:string -> t Ctypes.structure
 
-	val get_memory_info : device: t Ctypes.structure -> Memory.t Ctypes.structure
+	val get_memory_info : device:t Ctypes.structure -> Memory.t Ctypes.structure
 
 	val get_name : device:t Ctypes.structure -> string
 
@@ -86,5 +86,5 @@ module Device : sig
 	val get_vbios_version : device:t Ctypes.structure -> string
 
 	val on_same_board : device1:t Ctypes.structure ->
-		device2: t Ctypes.structure -> bool
+		device2:t Ctypes.structure -> bool
 end
