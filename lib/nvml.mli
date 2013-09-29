@@ -87,4 +87,6 @@ module Device : sig
 
 	val on_same_board : device1:t Ctypes.structure ->
 		device2:t Ctypes.structure -> bool
+
+	val set_compute_mode : device:t Ctypes.structure -> mode:ComputeMode.t -> unit
 end

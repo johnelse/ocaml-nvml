@@ -239,6 +239,10 @@ module Device = struct
 		let on_same_board =
 			foreign ~from:libnvml "nvmlDeviceOnSameBoard"
 				(t @-> t @-> ptr int @-> returning int)
+
+		let set_compute_mode =
+			foreign ~from:libnvml "nvmlDeviceSetComputeMode"
+				(t @-> ComputeMode.t @-> returning int)
 	end
 
 	(* Generic calls for common getter patterns. *)
@@ -314,4 +318,7 @@ module Device = struct
 		check_error
 			(fun () -> Foreign.on_same_board device1 device2 on_same_board_ptr);
 		(!@ on_same_board_ptr) <> 0
+
+	let set_compute_mode ~device ~mode =
+		check_error (fun () -> Foreign.set_compute_mode device mode)
 end
