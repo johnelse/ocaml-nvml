@@ -55,10 +55,10 @@ module TemperatureSensors : sig
 end
 
 module Utilization : sig
-	type t
-
-	val gpu : (Unsigned.uint, t structure) field
-	val memory : (Unsigned.uint, t structure) field
+	type t = {
+		gpu : Unsigned.uint;
+		memory : Unsigned.uint;
+	}
 end
 
 module Device : sig
@@ -87,7 +87,7 @@ module Device : sig
 	val get_temperature : device:t ->
 		sensor_type:TemperatureSensors.t -> Unsigned.uint
 
-	val get_utilization_rates : device:t -> Utilization.t Ctypes.structure
+	val get_utilization_rates : device:t -> Utilization.t
 
 	val get_uuid : device:t -> string
 
