@@ -255,6 +255,7 @@ module Device = struct
 		in
 		view ~read:of_internal ~write:to_internal internal_t
 
+	(* An initialising value for creating non-NULL Device.t pointers. *)
 	let init = {
 		handle = Unsigned.UInt64.of_int 0;
 	}
