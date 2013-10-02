@@ -241,72 +241,88 @@ module Device = struct
 	let handle = internal_t *:* uint64_t
 	let () = seal internal_t
 
-	type t = internal_t structure
+	type t = {
+		handle: Unsigned.UInt64.t;
+	}
+	let t =
+		let of_internal internal = {
+			handle = getf internal handle;
+		} in
+		let to_internal t =
+			let internal = make internal_t in
+			setf internal handle t.handle;
+			internal
+		in
+		view ~read:of_internal ~write:to_internal internal_t
+
+	let init = {
+		handle = Unsigned.UInt64.of_int 0;
+	}
 
 	(* Bindings to the C functions. *)
 	module Foreign = struct
 		let get_compute_mode =
 			foreign ~from:libnvml "nvmlDeviceGetComputeMode"
-				(internal_t @-> ptr ComputeMode.t @-> returning int)
+				(t @-> ptr ComputeMode.t @-> returning int)
 
 		let get_count =
 			foreign ~from:libnvml "nvmlDeviceGetCount" (ptr uint @-> returning int)
 
 		let get_fan_speed =
 			foreign ~from:libnvml "nvmlDeviceGetFanSpeed"
-				(internal_t @-> ptr uint @-> returning int)
+				(t @-> ptr uint @-> returning int)
 
 		let get_handle_by_index =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
-				(uint @-> ptr internal_t @-> returning int)
+				(uint @-> ptr t @-> returning int)
 
 		let get_handle_by_pci_bus_id =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByPciBusId"
-				(string @-> ptr internal_t @-> returning int)
+				(string @-> ptr t @-> returning int)
 
 		let get_handle_by_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByUUID"
-				(string @-> ptr internal_t @-> returning int)
+				(string @-> ptr t @-> returning int)
 
 		let get_memory_info =
 			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
-				(internal_t @-> ptr Memory.t @-> returning int)
+				(t @-> ptr Memory.t @-> returning int)
 
 		let get_name =
 			foreign ~from:libnvml "nvmlDeviceGetName"
-				(internal_t @-> ptr char @-> uint @-> returning int)
+				(t @-> ptr char @-> uint @-> returning int)
 
 		let get_power_usage =
 			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
-				(internal_t @-> ptr uint @-> returning int)
+				(t @-> ptr uint @-> returning int)
 
 		let get_serial =
 			foreign ~from:libnvml "nvmlDeviceGetSerial"
-				(internal_t @-> ptr char @-> uint @-> returning int)
+				(t @-> ptr char @-> uint @-> returning int)
 
 		let get_temperature =
 			foreign ~from:libnvml "nvmlDeviceGetTemperature"
-				(internal_t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
+				(t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
 
 		let get_utilization_rates =
 			foreign ~from:libnvml "nvmlDeviceGetUtilizationRates"
-				(internal_t @-> ptr Utilization.t @-> returning int)
+				(t @-> ptr Utilization.t @-> returning int)
 
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
-				(internal_t @-> ptr char @-> uint @-> returning int)
+				(t @-> ptr char @-> uint @-> returning int)
 
 		let get_vbios_version =
 			foreign ~from:libnvml "nvmlDeviceGetVbiosVersion"
-				(internal_t @-> ptr char @-> uint @-> returning int)
+				(t @-> ptr char @-> uint @-> returning int)
 
 		let on_same_board =
 			foreign ~from:libnvml "nvmlDeviceOnSameBoard"
-				(internal_t @-> internal_t @-> ptr int @-> returning int)
+				(t @-> t @-> ptr int @-> returning int)
 
 		let set_compute_mode =
 			foreign ~from:libnvml "nvmlDeviceSetComputeMode"
-				(internal_t @-> ComputeMode.t @-> returning int)
+				(t @-> ComputeMode.t @-> returning int)
 	end
 
 	(* Generic calls for common getter patterns. *)
@@ -336,20 +352,20 @@ module Device = struct
 		get_uint_generic ~device ~foreign_fn:Foreign.get_fan_speed
 
 	let get_handle_by_index ~index =
-		let device = make internal_t in
-		check_error (fun () -> Foreign.get_handle_by_index index (addr device));
-		device
+		let device_ptr = allocate t init in
+		check_error (fun () -> Foreign.get_handle_by_index index device_ptr);
+		!@ device_ptr
 
 	let get_handle_by_pci_bus_id ~pci_bus_id =
-		let device = make internal_t in
+		let device_ptr = allocate t init in
 		check_error
-			(fun () -> Foreign.get_handle_by_pci_bus_id pci_bus_id (addr device));
-		device
+			(fun () -> Foreign.get_handle_by_pci_bus_id pci_bus_id device_ptr);
+		!@ device_ptr
 
 	let get_handle_by_uuid ~uuid =
-		let device = make internal_t in
-		check_error (fun () -> Foreign.get_handle_by_uuid uuid (addr device));
-		device
+		let device_ptr = allocate t init in
+		check_error (fun () -> Foreign.get_handle_by_uuid uuid device_ptr);
+		!@ device_ptr
 
 	let get_memory_info ~device =
 		let memory_ptr = allocate Memory.t Memory.init in
