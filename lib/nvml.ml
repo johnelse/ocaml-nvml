@@ -215,6 +215,24 @@ module Utilization = struct
 		gpu : Unsigned.uint;
 		memory : Unsigned.uint;
 	}
+	let t =
+		let t_of_internal_t internal = {
+			gpu = getf internal gpu;
+			memory = getf internal memory;
+		} in
+		let internal_t_of_t t =
+			let internal = make internal_t in
+			setf internal gpu t.gpu;
+			setf internal memory t.memory;
+			internal
+		in
+		view ~read:t_of_internal_t ~write:internal_t_of_t internal_t
+
+	(* An initialising value for creating non-NULL Utilization.t pointers. *)
+	let init = {
+		gpu = Unsigned.UInt.of_int 0;
+		memory = Unsigned.UInt.of_int 0;
+	}
 end
 
 module Device = struct
@@ -272,7 +290,7 @@ module Device = struct
 
 		let get_utilization_rates =
 			foreign ~from:libnvml "nvmlDeviceGetUtilizationRates"
-				(internal_t @-> ptr Utilization.internal_t @-> returning int)
+				(internal_t @-> ptr Utilization.t @-> returning int)
 
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
@@ -354,13 +372,9 @@ module Device = struct
 		!@ temperature_ptr
 
 	let get_utilization_rates ~device =
-		let utilization = make Utilization.internal_t in
-		check_error
-			(fun () -> Foreign.get_utilization_rates device (addr utilization));
-		Utilization.({
-			gpu = getf utilization gpu;
-			memory = getf utilization memory;
-		})
+		let utilization_ptr = allocate Utilization.t Utilization.init in
+		check_error (fun () -> Foreign.get_utilization_rates device utilization_ptr);
+		!@ utilization_ptr
 
 	let get_uuid ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:80
