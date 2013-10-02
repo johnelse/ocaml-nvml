@@ -64,38 +64,36 @@ end
 module Device : sig
 	type t
 
-	val get_compute_mode : device:t Ctypes.structure -> ComputeMode.t
+	val get_compute_mode : device:t -> ComputeMode.t
 
 	val get_count : unit -> Unsigned.uint
 
-	val get_fan_speed : device:t Ctypes.structure -> Unsigned.uint
+	val get_fan_speed : device:t -> Unsigned.uint
 
-	val get_handle_by_index : index:Unsigned.uint -> t Ctypes.structure
+	val get_handle_by_index : index:Unsigned.uint -> t
 
-	val get_handle_by_pci_bus_id : pci_bus_id:string -> t Ctypes.structure
+	val get_handle_by_pci_bus_id : pci_bus_id:string -> t
 
-	val get_handle_by_uuid : uuid:string -> t Ctypes.structure
+	val get_handle_by_uuid : uuid:string -> t
 
-	val get_memory_info : device:t Ctypes.structure -> Memory.t Ctypes.structure
+	val get_memory_info : device:t -> Memory.t Ctypes.structure
 
-	val get_name : device:t Ctypes.structure -> string
+	val get_name : device:t -> string
 
-	val get_power_usage : device:t Ctypes.structure -> Unsigned.uint
+	val get_power_usage : device:t -> Unsigned.uint
 
-	val get_serial : device:t Ctypes.structure -> string
+	val get_serial : device:t -> string
 
-	val get_temperature : device:t Ctypes.structure ->
+	val get_temperature : device:t ->
 		sensor_type:TemperatureSensors.t -> Unsigned.uint
 
-	val get_utilization_rates : device:t Ctypes.structure ->
-		Utilization.t Ctypes.structure
+	val get_utilization_rates : device:t -> Utilization.t Ctypes.structure
 
-	val get_uuid : device:t Ctypes.structure -> string
+	val get_uuid : device:t -> string
 
-	val get_vbios_version : device:t Ctypes.structure -> string
+	val get_vbios_version : device:t -> string
 
-	val on_same_board : device1:t Ctypes.structure ->
-		device2:t Ctypes.structure -> bool
+	val on_same_board : device1:t -> device2:t -> bool
 
-	val set_compute_mode : device:t Ctypes.structure -> mode:ComputeMode.t -> unit
+	val set_compute_mode : device:t -> mode:ComputeMode.t -> unit
 end

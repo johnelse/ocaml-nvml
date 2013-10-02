@@ -186,75 +186,77 @@ module Utilization = struct
 end
 
 module Device = struct
-	type t
-	let t : t structure typ = structure "nvmlDevice_t"
-	let handle = t *:* uint64_t
-	let () = seal t
+	type internal_t
+	let internal_t : internal_t structure typ = structure "nvmlDevice_t"
+	let handle = internal_t *:* uint64_t
+	let () = seal internal_t
+
+	type t = internal_t structure
 
 	(* Bindings to the C functions. *)
 	module Foreign = struct
 		let get_compute_mode =
 			foreign ~from:libnvml "nvmlDeviceGetComputeMode"
-				(t @-> ptr ComputeMode.t @-> returning int)
+				(internal_t @-> ptr ComputeMode.t @-> returning int)
 
 		let get_count =
 			foreign ~from:libnvml "nvmlDeviceGetCount" (ptr uint @-> returning int)
 
 		let get_fan_speed =
 			foreign ~from:libnvml "nvmlDeviceGetFanSpeed"
-				(t @-> ptr uint @-> returning int)
+				(internal_t @-> ptr uint @-> returning int)
 
 		let get_handle_by_index =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByIndex"
-				(uint @-> ptr t @-> returning int)
+				(uint @-> ptr internal_t @-> returning int)
 
 		let get_handle_by_pci_bus_id =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByPciBusId"
-				(string @-> ptr t @-> returning int)
+				(string @-> ptr internal_t @-> returning int)
 
 		let get_handle_by_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetHandleByUUID"
-				(string @-> ptr t @-> returning int)
+				(string @-> ptr internal_t @-> returning int)
 
 		let get_memory_info =
 			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
-				(t @-> ptr Memory.t @-> returning int)
+				(internal_t @-> ptr Memory.t @-> returning int)
 
 		let get_name =
 			foreign ~from:libnvml "nvmlDeviceGetName"
-				(t @-> ptr char @-> uint @-> returning int)
+				(internal_t @-> ptr char @-> uint @-> returning int)
 
 		let get_power_usage =
 			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
-				(t @-> ptr uint @-> returning int)
+				(internal_t @-> ptr uint @-> returning int)
 
 		let get_serial =
 			foreign ~from:libnvml "nvmlDeviceGetSerial"
-				(t @-> ptr char @-> uint @-> returning int)
+				(internal_t @-> ptr char @-> uint @-> returning int)
 
 		let get_temperature =
 			foreign ~from:libnvml "nvmlDeviceGetTemperature"
-				(t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
+				(internal_t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
 
 		let get_utilization_rates =
 			foreign ~from:libnvml "nvmlDeviceGetUtilizationRates"
-				(t @-> ptr Utilization.t @-> returning int)
+				(internal_t @-> ptr Utilization.t @-> returning int)
 
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
-				(t @-> ptr char @-> uint @-> returning int)
+				(internal_t @-> ptr char @-> uint @-> returning int)
 
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetVbiosVersion"
-				(t @-> ptr char @-> uint @-> returning int)
+				(internal_t @-> ptr char @-> uint @-> returning int)
 
 		let on_same_board =
 			foreign ~from:libnvml "nvmlDeviceOnSameBoard"
-				(t @-> t @-> ptr int @-> returning int)
+				(internal_t @-> internal_t @-> ptr int @-> returning int)
 
 		let set_compute_mode =
 			foreign ~from:libnvml "nvmlDeviceSetComputeMode"
-				(t @-> ComputeMode.t @-> returning int)
+				(internal_t @-> ComputeMode.t @-> returning int)
 	end
 
 	(* Generic calls for common getter patterns. *)
@@ -284,18 +286,18 @@ module Device = struct
 		get_uint_generic ~device ~foreign_fn:Foreign.get_fan_speed
 
 	let get_handle_by_index ~index =
-		let device = make t in
+		let device = make internal_t in
 		check_error (fun () -> Foreign.get_handle_by_index index (addr device));
 		device
 
 	let get_handle_by_pci_bus_id ~pci_bus_id =
-		let device = make t in
+		let device = make internal_t in
 		check_error
 			(fun () -> Foreign.get_handle_by_pci_bus_id pci_bus_id (addr device));
 		device
 
 	let get_handle_by_uuid ~uuid =
-		let device = make t in
+		let device = make internal_t in
 		check_error (fun () -> Foreign.get_handle_by_uuid uuid (addr device));
 		device
 
