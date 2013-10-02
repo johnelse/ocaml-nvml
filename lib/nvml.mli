@@ -44,7 +44,6 @@ end
 
 module Memory : sig
 	type t
-	val t : t structure typ
 
 	val total : (Unsigned.ullong, t structure) field
 	val free : (Unsigned.ullong, t structure) field
@@ -57,7 +56,6 @@ end
 
 module Utilization : sig
 	type t
-	val t : t structure typ
 
 	val gpu : (Unsigned.uint, t structure) field
 	val memory : (Unsigned.uint, t structure) field
