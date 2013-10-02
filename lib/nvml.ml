@@ -242,7 +242,7 @@ module Device = struct
 	let () = seal internal_t
 
 	type t = {
-		handle: Unsigned.UInt64.t;
+		handle: Unsigned.uint64;
 	}
 	let t =
 		let of_internal internal = {
