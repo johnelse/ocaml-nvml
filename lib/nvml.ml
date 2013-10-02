@@ -138,20 +138,20 @@ module ComputeMode = struct
 		| Exclusive_process
 
 	let t = 
-		let t_of_int = function
+		let of_int = function
 			| 0 -> Default
 			| 1 -> Exclusive_thread
 			| 2 -> Prohibited
 			| 3 -> Exclusive_process
 			| _ -> invalid_arg "ComputeMode.t"
 		in
-		let int_of_t = function
+		let to_int = function
 			| Default -> 0
 			| Exclusive_thread -> 1
 			| Prohibited -> 2
 			| Exclusive_process -> 3
 		in
-		view ~read:t_of_int ~write:int_of_t int
+		view ~read:of_int ~write:to_int int
 end
 
 module Memory = struct
@@ -168,19 +168,19 @@ module Memory = struct
 		used : Unsigned.ullong;
 	}
 	let t =
-		let t_of_internal_t internal = {
+		let of_internal internal = {
 			total = getf internal total;
 			free = getf internal free;
 			used = getf internal used;
 		} in
-		let internal_t_of_t t =
+		let to_internal t =
 			let internal = make internal_t in
 			setf internal total t.total;
 			setf internal free t.free;
 			setf internal used t.used;
 			internal
 		in
-		view ~read:t_of_internal_t ~write:internal_t_of_t internal_t
+		view ~read:of_internal ~write:to_internal internal_t
 
 	(* An initialising value for creating non-NULL Memory.t pointers. *)
 	let init = {
@@ -194,14 +194,14 @@ module TemperatureSensors = struct
 	type t = GPU
 
 	let t =
-		let t_of_int = function
+		let of_int = function
 			| 0 -> GPU
 			| _ -> invalid_arg "TemperatureSensors.t"
 		in
-		let int_of_t = function
+		let to_int = function
 			| GPU -> 0
 		in
-		view ~read:t_of_int ~write:int_of_t int
+		view ~read:of_int ~write:to_int int
 end
 
 module Utilization = struct
@@ -216,17 +216,17 @@ module Utilization = struct
 		memory : Unsigned.uint;
 	}
 	let t =
-		let t_of_internal_t internal = {
+		let of_internal internal = {
 			gpu = getf internal gpu;
 			memory = getf internal memory;
 		} in
-		let internal_t_of_t t =
+		let to_internal t =
 			let internal = make internal_t in
 			setf internal gpu t.gpu;
 			setf internal memory t.memory;
 			internal
 		in
-		view ~read:t_of_internal_t ~write:internal_t_of_t internal_t
+		view ~read:of_internal ~write:to_internal internal_t
 
 	(* An initialising value for creating non-NULL Utilization.t pointers. *)
 	let init = {
