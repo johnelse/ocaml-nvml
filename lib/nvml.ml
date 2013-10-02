@@ -177,6 +177,14 @@ module TemperatureSensors = struct
 		view ~read:t_of_int ~write:int_of_t int
 end
 
+module Utilization = struct
+	type t
+	let t : t structure typ = structure "nvmlUtilization_t"
+	let gpu = t *:* uint
+	let memory = t *:* uint
+	let () = seal t
+end
+
 module Device = struct
 	type t
 	let t : t structure typ = structure "nvmlDevice_t"
@@ -227,6 +235,10 @@ module Device = struct
 		let get_temperature =
 			foreign ~from:libnvml "nvmlDeviceGetTemperature"
 				(t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
+
+		let get_utilization_rates =
+			foreign ~from:libnvml "nvmlDeviceGetUtilizationRates"
+				(t @-> ptr Utilization.t @-> returning int)
 
 		let get_uuid =
 			foreign ~from:libnvml "nvmlDeviceGetUUID"
@@ -306,6 +318,12 @@ module Device = struct
 		check_error
 			(fun () -> Foreign.get_temperature device sensor_type temperature_ptr);
 		!@ temperature_ptr
+
+	let get_utilization_rates ~device =
+		let utilization = make Utilization.t in
+		check_error
+			(fun () -> Foreign.get_utilization_rates device (addr utilization));
+		utilization
 
 	let get_uuid ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_uuid ~length:80
