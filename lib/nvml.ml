@@ -167,6 +167,27 @@ module Memory = struct
 		free : Unsigned.ullong;
 		used : Unsigned.ullong;
 	}
+	let t =
+		let t_of_internal_t internal = {
+			total = getf internal total;
+			free = getf internal free;
+			used = getf internal used;
+		} in
+		let internal_t_of_t t =
+			let internal = make internal_t in
+			setf internal total t.total;
+			setf internal free t.free;
+			setf internal used t.used;
+			internal
+		in
+		view ~read:t_of_internal_t ~write:internal_t_of_t internal_t
+
+	(* An initialising value for creating non-NULL Memory.t pointers. *)
+	let init = {
+		total = Unsigned.ULLong.of_int 0;
+		free = Unsigned.ULLong.of_int 0;
+		used = Unsigned.ULLong.of_int 0;
+	}
 end
 
 module TemperatureSensors = struct
@@ -231,7 +252,7 @@ module Device = struct
 
 		let get_memory_info =
 			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
-				(internal_t @-> ptr Memory.internal_t @-> returning int)
+				(internal_t @-> ptr Memory.t @-> returning int)
 
 		let get_name =
 			foreign ~from:libnvml "nvmlDeviceGetName"
@@ -313,13 +334,9 @@ module Device = struct
 		device
 
 	let get_memory_info ~device =
-		let memory = make Memory.internal_t in
-		check_error (fun () -> Foreign.get_memory_info device (addr memory));
-		Memory.({
-			total = getf memory total;
-			free = getf memory free;
-			used = getf memory used;
-		})
+		let memory_ptr = allocate Memory.t Memory.init in
+		check_error (fun () -> Foreign.get_memory_info device memory_ptr);
+		!@ memory_ptr
 
 	let get_name ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_name ~length:64
