@@ -43,11 +43,11 @@ module ComputeMode : sig
 end
 
 module Memory : sig
-	type t
-
-	val total : (Unsigned.ullong, t structure) field
-	val free : (Unsigned.ullong, t structure) field
-	val used : (Unsigned.ullong, t structure) field
+	type t = {
+		total : Unsigned.ullong;
+		free : Unsigned.ullong;
+		used : Unsigned.ullong;
+	}
 end
 
 module TemperatureSensors : sig
@@ -76,7 +76,7 @@ module Device : sig
 
 	val get_handle_by_uuid : uuid:string -> t
 
-	val get_memory_info : device:t -> Memory.t Ctypes.structure
+	val get_memory_info : device:t -> Memory.t
 
 	val get_name : device:t -> string
 

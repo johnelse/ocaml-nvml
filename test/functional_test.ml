@@ -41,10 +41,10 @@ let () =
 			| None -> "N/A");
 		Printf.printf "Temperature = %d\n" (UInt.to_int temperature);
 		Printf.printf "Memory total = %d\n"
-			(ULLong.to_int (Ctypes.getf memory Nvml.Memory.total));
+			(ULLong.to_int memory.Nvml.Memory.total);
 		Printf.printf "Memory free = %d\n"
-			(ULLong.to_int (Ctypes.getf memory Nvml.Memory.free));
+			(ULLong.to_int memory.Nvml.Memory.free);
 		Printf.printf "Memory used = %d\n"
-			(ULLong.to_int (Ctypes.getf memory Nvml.Memory.used))
+			(ULLong.to_int memory.Nvml.Memory.used)
 	done;
 	Nvml.shutdown ()

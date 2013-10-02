@@ -155,12 +155,18 @@ module ComputeMode = struct
 end
 
 module Memory = struct
-	type t
-	let t : t structure typ = structure "nvmlMemory_t"
-	let total = t *:* ullong
-	let free = t *:* ullong
-	let used = t *:* ullong
-	let () = seal t
+	type internal_t
+	let internal_t : internal_t structure typ = structure "nvmlMemory_t"
+	let total = internal_t *:* ullong
+	let free = internal_t *:* ullong
+	let used = internal_t *:* ullong
+	let () = seal internal_t
+
+	type t = {
+		total : Unsigned.ullong;
+		free : Unsigned.ullong;
+		used : Unsigned.ullong;
+	}
 end
 
 module TemperatureSensors = struct
@@ -220,7 +226,7 @@ module Device = struct
 
 		let get_memory_info =
 			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
-				(internal_t @-> ptr Memory.t @-> returning int)
+				(internal_t @-> ptr Memory.internal_t @-> returning int)
 
 		let get_name =
 			foreign ~from:libnvml "nvmlDeviceGetName"
@@ -302,9 +308,13 @@ module Device = struct
 		device
 
 	let get_memory_info ~device =
-		let memory = make Memory.t in
+		let memory = make Memory.internal_t in
 		check_error (fun () -> Foreign.get_memory_info device (addr memory));
-		memory
+		Memory.({
+			total = getf memory total;
+			free = getf memory free;
+			used = getf memory used;
+		})
 
 	let get_name ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_name ~length:64
