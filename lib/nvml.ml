@@ -154,6 +154,24 @@ module ComputeMode = struct
 		view ~read:of_int ~write:to_int int
 end
 
+module EnableState = struct
+	type t =
+		| Disabled
+		| Enabled
+
+	let t =
+		let of_int = function
+			| 0 -> Disabled
+			| 1 -> Enabled
+			| _ -> invalid_arg "EnableState.t"
+		in
+		let to_int = function
+			| Disabled -> 0
+			| Enabled -> 1
+		in
+		view ~read:of_int ~write:to_int int
+end
+
 module Memory = struct
 	type internal_t
 	let internal_t : internal_t structure typ = structure "nvmlMemory_t"
@@ -297,6 +315,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
 				(t @-> ptr uint @-> returning int)
 
+		let get_persistence_mode =
+			foreign ~from:libnvml "nvmlDeviceGetPersistenceMode"
+				(t @-> ptr EnableState.t @-> returning int)
+
 		let get_serial =
 			foreign ~from:libnvml "nvmlDeviceGetSerial"
 				(t @-> ptr char @-> uint @-> returning int)
@@ -378,6 +400,12 @@ module Device = struct
 
 	let get_power_usage ~device =
 		get_uint_generic ~device ~foreign_fn:Foreign.get_power_usage
+
+	let get_persistence_mode ~device =
+		let persistence_mode_ptr = allocate EnableState.t EnableState.Disabled in
+		check_error
+			(fun () -> Foreign.get_persistence_mode device persistence_mode_ptr);
+		!@ persistence_mode_ptr
 
 	let get_serial ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_serial ~length:30

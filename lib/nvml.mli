@@ -42,6 +42,12 @@ module ComputeMode : sig
 		| Exclusive_process
 end
 
+module EnableState : sig
+	type t =
+		| Disabled
+		| Enabled
+end
+
 module Memory : sig
 	type t = {
 		total : Unsigned.ullong;
@@ -81,6 +87,8 @@ module Device : sig
 	val get_name : device:t -> string
 
 	val get_power_usage : device:t -> Unsigned.uint
+
+	val get_persistence_mode : device:t -> EnableState.t
 
 	val get_serial : device:t -> string
 
