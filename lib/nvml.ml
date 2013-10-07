@@ -137,7 +137,7 @@ module ComputeMode = struct
 		| Prohibited
 		| Exclusive_process
 
-	let t = 
+	let t =
 		let of_int = function
 			| 0 -> Default
 			| 1 -> Exclusive_thread
