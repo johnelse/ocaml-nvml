@@ -104,4 +104,6 @@ module Device : sig
 	val on_same_board : device1:t -> device2:t -> bool
 
 	val set_compute_mode : device:t -> mode:ComputeMode.t -> unit
+
+	val set_persistence_mode :device:t -> mode:EnableState.t -> unit
 end

@@ -346,6 +346,10 @@ module Device = struct
 		let set_compute_mode =
 			foreign ~from:libnvml "nvmlDeviceSetComputeMode"
 				(t @-> ComputeMode.t @-> returning int)
+
+		let set_persistence_mode =
+			foreign ~from:libnvml "nvmlDeviceSetPersistenceMode"
+				(t @-> EnableState.t @-> returning int)
 	end
 
 	(* Generic calls for common getter patterns. *)
@@ -435,4 +439,7 @@ module Device = struct
 
 	let set_compute_mode ~device ~mode =
 		check_error (fun () -> Foreign.set_compute_mode device mode)
+
+	let set_persistence_mode ~device ~mode =
+		check_error (fun () -> Foreign.set_persistence_mode device mode)
 end
