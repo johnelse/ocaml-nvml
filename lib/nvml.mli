@@ -34,6 +34,13 @@ module System : sig
 	val get_process_name : pid:Unsigned.uint -> length:Unsigned.uint -> string
 end
 
+module ClockType : sig
+	type t =
+		| Graphics
+		| SM
+		| Mem
+end
+
 module ComputeMode : sig
 	type t =
 		| Default
@@ -69,6 +76,8 @@ end
 
 module Device : sig
 	type t
+
+	val get_clock_info : device:t -> clock_type:ClockType.t -> Unsigned.uint
 
 	val get_compute_mode : device:t -> ComputeMode.t
 

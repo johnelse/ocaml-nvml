@@ -130,6 +130,27 @@ module System = struct
 		Util.string_of_char_array char_array
 end
 
+module ClockType = struct
+	type t =
+		| Graphics
+		| SM
+		| Mem
+
+	let t =
+		let of_int = function
+			| 0 -> Graphics
+			| 1 -> SM
+			| 2 -> Mem
+			| _ -> invalid_arg "ClockType.t"
+		in
+		let to_int = function
+			| Graphics -> 0
+			| SM -> 1
+			| Mem -> 2
+		in
+		view ~read:of_int ~write:to_int int
+end
+
 module ComputeMode = struct
 	type t =
 		| Default
@@ -280,6 +301,10 @@ module Device = struct
 
 	(* Bindings to the C functions. *)
 	module Foreign = struct
+		let get_clock_info =
+			foreign ~from:libnvml "nvmlDeviceGetClockInfo"
+				(t @-> ClockType.t @-> ptr uint @-> returning int)
+
 		let get_compute_mode =
 			foreign ~from:libnvml "nvmlDeviceGetComputeMode"
 				(t @-> ptr ComputeMode.t @-> returning int)
@@ -365,6 +390,12 @@ module Device = struct
 		!@ uint_ptr
 
 	(* Functions exposed to the interface. *)
+	let get_clock_info ~device ~clock_type =
+		let clock_speed_ptr = allocate uint (UInt.of_int 0) in
+		check_error
+			(fun () -> Foreign.get_clock_info device clock_type clock_speed_ptr);
+		!@ clock_speed_ptr
+
 	let get_compute_mode ~device =
 		let compute_mode_ptr = allocate ComputeMode.t (ComputeMode.Default) in
 		check_error (fun () -> Foreign.get_compute_mode device compute_mode_ptr);
