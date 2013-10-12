@@ -328,6 +328,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetHandleByUUID"
 				(string @-> ptr t @-> returning int)
 
+		let get_max_clock_info =
+			foreign ~from:libnvml "nvmlDeviceGetMaxClockInfo"
+				(t @-> ClockType.t @-> ptr uint @-> returning int)
+
 		let get_memory_info =
 			foreign ~from:libnvml "nvmlDeviceGetMemoryInfo"
 				(t @-> ptr Memory.t @-> returning int)
@@ -424,6 +428,12 @@ module Device = struct
 		let device_ptr = allocate t init in
 		check_error (fun () -> Foreign.get_handle_by_uuid uuid device_ptr);
 		!@ device_ptr
+
+	let get_max_clock_info ~device ~clock_type =
+		let clock_speed_ptr = allocate uint (UInt.of_int 0) in
+		check_error
+			(fun () -> Foreign.get_max_clock_info device clock_type clock_speed_ptr);
+		!@ clock_speed_ptr
 
 	let get_memory_info ~device =
 		let memory_ptr = allocate Memory.t Memory.init in

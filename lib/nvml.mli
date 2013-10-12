@@ -91,6 +91,8 @@ module Device : sig
 
 	val get_handle_by_uuid : uuid:string -> t
 
+	val get_max_clock_info : device:t -> clock_type:ClockType.t -> Unsigned.uint
+
 	val get_memory_info : device:t -> Memory.t
 
 	val get_name : device:t -> string
