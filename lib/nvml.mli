@@ -101,6 +101,8 @@ module Device : sig
 
 	val get_persistence_mode : device:t -> EnableState.t
 
+	val get_power_management_mode : device:t -> EnableState.t
+
 	val get_serial : device:t -> string
 
 	val get_temperature : device:t ->

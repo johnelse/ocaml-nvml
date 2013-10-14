@@ -348,6 +348,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetPersistenceMode"
 				(t @-> ptr EnableState.t @-> returning int)
 
+		let get_power_management_mode =
+			foreign ~from:libnvml "nvmlDeviceGetPowerManagementMode"
+				(t @-> ptr EnableState.t @-> returning int)
+
 		let get_serial =
 			foreign ~from:libnvml "nvmlDeviceGetSerial"
 				(t @-> ptr char @-> uint @-> returning int)
@@ -451,6 +455,13 @@ module Device = struct
 		check_error
 			(fun () -> Foreign.get_persistence_mode device persistence_mode_ptr);
 		!@ persistence_mode_ptr
+
+	let get_power_management_mode ~device =
+		let power_management_mode_ptr = allocate EnableState.t EnableState.Disabled in
+		check_error
+			(fun () ->
+				Foreign.get_power_management_mode device power_management_mode_ptr);
+		!@ power_management_mode_ptr
 
 	let get_serial ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_serial ~length:30
