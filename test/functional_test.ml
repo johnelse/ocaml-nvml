@@ -30,6 +30,7 @@ let () =
 				~sensor_type:Nvml.TemperatureSensors.GPU
 		in
 		let memory = Nvml.Device.get_memory_info ~device in
+		let pci_info = Nvml.Device.get_pci_info ~device in
 		separator ();
 		Printf.printf "Device index = %d\n" index;
 		Printf.printf "Name = %s\n" name;
@@ -45,6 +46,7 @@ let () =
 		Printf.printf "Memory free = %d\n"
 			(ULLong.to_int memory.Nvml.Memory.free);
 		Printf.printf "Memory used = %d\n"
-			(ULLong.to_int memory.Nvml.Memory.used)
+			(ULLong.to_int memory.Nvml.Memory.used);
+		Printf.printf "PCI address = %s\n" pci_info.Nvml.PciInfo.bus_id
 	done;
 	Nvml.shutdown ()
