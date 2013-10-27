@@ -63,6 +63,17 @@ module Memory : sig
 	}
 end
 
+module PciInfo : sig
+	type t = {
+		bus_id: string;
+		domain: Unsigned.uint;
+		bus: Unsigned.uint;
+		device: Unsigned.uint;
+		pci_device_id: Unsigned.uint;
+		pci_subsystem_id: Unsigned.uint;
+	}
+end
+
 module TemperatureSensors : sig
 	type t = GPU
 end
@@ -96,6 +107,8 @@ module Device : sig
 	val get_memory_info : device:t -> Memory.t
 
 	val get_name : device:t -> string
+
+	val get_pci_info : device:t -> PciInfo.t
 
 	val get_power_usage : device:t -> Unsigned.uint
 

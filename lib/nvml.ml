@@ -229,6 +229,57 @@ module Memory = struct
 	}
 end
 
+module PciInfo = struct
+	let nvml_device_pci_bus_id_buffer_size = 16
+
+	type internal_t
+	let internal_t : internal_t structure typ = structure "nvmlPciInfo_t"
+	let bus_id = internal_t *:* (array nvml_device_pci_bus_id_buffer_size char)
+	let domain = internal_t *:* uint
+	let bus = internal_t *:* uint
+	let device = internal_t *:* uint
+	let pci_device_id = internal_t *:* uint
+	let pci_subsystem_id = internal_t *:* uint
+	let () = seal internal_t
+
+	type t = {
+		bus_id: string;
+		domain: Unsigned.uint;
+		bus: Unsigned.uint;
+		device: Unsigned.uint;
+		pci_device_id: Unsigned.uint;
+		pci_subsystem_id: Unsigned.uint;
+	}
+	let t =
+		let of_internal internal = {
+			bus_id = Util.string_of_char_array (getf internal bus_id);
+			domain = getf internal domain;
+			bus = getf internal bus;
+			device = getf internal device;
+			pci_device_id = getf internal pci_device_id;
+			pci_subsystem_id = getf internal pci_subsystem_id;
+		} in
+		let to_internal t =
+			let internal = make internal_t in
+			setf internal domain t.domain;
+			setf internal bus t.bus;
+			setf internal device t.device;
+			setf internal pci_device_id t.pci_device_id;
+			setf internal pci_subsystem_id t.pci_subsystem_id;
+			internal
+		in
+		view ~read:of_internal ~write:to_internal internal_t
+
+	let init = {
+		bus_id = String.create nvml_device_pci_bus_id_buffer_size;
+		domain = UInt.of_int 0;
+		bus = UInt.of_int 0;
+		device = UInt.of_int 0;
+		pci_device_id = UInt.of_int 0;
+		pci_subsystem_id = UInt.of_int 0;
+	}
+end
+
 module TemperatureSensors = struct
 	type t = GPU
 
@@ -340,6 +391,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetName"
 				(t @-> ptr char @-> uint @-> returning int)
 
+		let get_pci_info =
+			foreign ~from:libnvml "nvmlDeviceGetPciInfo"
+				(t @-> ptr PciInfo.t @-> returning int)
+
 		let get_power_usage =
 			foreign ~from:libnvml "nvmlDeviceGetPowerUsage"
 				(t @-> ptr uint @-> returning int)
@@ -446,6 +501,11 @@ module Device = struct
 
 	let get_name ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_name ~length:64
+
+	let get_pci_info ~device =
+		let pci_info_ptr = allocate PciInfo.t PciInfo.init in
+		check_error (fun () -> Foreign.get_pci_info device pci_info_ptr);
+		!@ pci_info_ptr
 
 	let get_power_usage ~device =
 		get_uint_generic ~device ~foreign_fn:Foreign.get_power_usage
