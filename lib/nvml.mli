@@ -118,6 +118,8 @@ module Device : sig
 
 	val get_serial : device:t -> string
 
+	val get_supported_event_types : device:t -> Unsigned.ullong
+
 	val get_temperature : device:t ->
 		sensor_type:TemperatureSensors.t -> Unsigned.uint
 

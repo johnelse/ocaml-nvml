@@ -411,6 +411,10 @@ module Device = struct
 			foreign ~from:libnvml "nvmlDeviceGetSerial"
 				(t @-> ptr char @-> uint @-> returning int)
 
+		let get_supported_event_types =
+			foreign ~from:libnvml "nvmlDeviceGetSupportedEventTypes"
+				(t @-> ptr ullong @-> returning int)
+
 		let get_temperature =
 			foreign ~from:libnvml "nvmlDeviceGetTemperature"
 				(t @-> TemperatureSensors.t @-> ptr uint @-> returning int)
@@ -525,6 +529,12 @@ module Device = struct
 
 	let get_serial ~device =
 		get_string_generic ~device ~foreign_fn:Foreign.get_serial ~length:30
+
+	let get_supported_event_types ~device =
+		let event_types_ptr = allocate ullong (ULLong.of_int 0) in
+		check_error
+			(fun () -> Foreign.get_supported_event_types device event_types_ptr);
+		!@ event_types_ptr
 
 	let get_temperature ~device ~sensor_type =
 		let temperature_ptr = allocate uint (UInt.of_int 0) in
