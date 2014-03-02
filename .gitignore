@@ -1,3 +1,7 @@
 *.swp
 
-dist
+_build
+
+functional_test.byte
+setup.data
+setup.log

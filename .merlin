@@ -2,5 +2,5 @@ PKG ctypes ctypes.foreign
 S lib
 S test
 
-B dist/build/lib-nvml
-B dist/build/functional_test
+B _build/lib
+B _build/test

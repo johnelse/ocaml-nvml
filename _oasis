@@ -1,0 +1,25 @@
+OASISFormat:     0.3
+Name:            nvml
+Version:         0.1.0
+Synopsis:        OCaml bindings to the NVIDIA management library
+License:         MIT
+Authors:         John Else
+Copyrights:      (C) 2013 John Else
+BuildTools:      ocamlbuild
+Plugins:         META (0.3)
+
+Library nvml
+  Path:          lib
+  BuildDepends:  ctypes.foreign
+  Findlibname:   nvml
+  ByteOpt:       -bin-annot
+  NativeOpt:     -bin-annot
+  Modules:       Nvml
+
+Executable functional_test
+  Path:          test
+  MainIs:        functional_test.ml
+  Install:       false
+  BuildDepends:  ctypes, nvml
+  ByteOpt:       -bin-annot
+  NativeOpt:     -bin-annot
