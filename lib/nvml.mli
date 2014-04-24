@@ -2,7 +2,7 @@ open Ctypes
 
 val open_library : unit -> Dl.library
 
-module Make : functor (L : (sig val library : Dl.library end)) -> sig
+module type API = sig
 	type error =
 		| Uninitialized
 		| Invalid_argument
@@ -139,3 +139,5 @@ module Make : functor (L : (sig val library : Dl.library end)) -> sig
 		val set_persistence_mode :device:t -> mode:EnableState.t -> unit
 	end
 end
+
+module Make : functor (L : (sig val library : Dl.library end)) -> API
