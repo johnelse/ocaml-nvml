@@ -143,7 +143,7 @@ module type API = sig
 	end
 end
 
-module Make = functor (L : (sig val library : Dl.library end)) -> struct
+module Make (L : (sig val library : Dl.library end)) : API = struct
 	type error =
 		| Uninitialized
 		| Invalid_argument
