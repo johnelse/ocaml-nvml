@@ -219,10 +219,10 @@ module Make (L : (sig val library : Dl.library end)) : API = struct
 		let string_of_char_array array =
 			let buf = Buffer.create 64 in
 			let rec aux array index =
-				if index >= Array.length array
+				if index >= CArray.length array
 				then Buffer.contents buf
 				else begin
-					let c = Array.get array index in
+					let c = CArray.get array index in
 					if c = '\000'
 					then Buffer.contents buf
 					else begin
@@ -252,20 +252,20 @@ module Make (L : (sig val library : Dl.library end)) : API = struct
 
 		(* Functions exposed to the interface. *)
 		let get_driver_version () =
-			let char_array = Array.make char 80 in
-			let char_ptr = Array.start char_array in
+			let char_array = CArray.make char 80 in
+			let char_ptr = CArray.start char_array in
 			check_error (fun () -> Foreign.get_driver_version char_ptr (UInt.of_int 80));
 			Util.string_of_char_array char_array
 
 		let get_nvml_version () =
-			let char_array = Array.make char 80 in
-			let char_ptr = Array.start char_array in
+			let char_array = CArray.make char 80 in
+			let char_ptr = CArray.start char_array in
 			check_error (fun () -> Foreign.get_nvml_version char_ptr (UInt.of_int 80));
 			Util.string_of_char_array char_array
 
 		let get_process_name ~pid ~length =
-			let char_array = Array.make char (UInt.to_int length) in
-			let char_ptr = Array.start char_array in
+			let char_array = CArray.make char (UInt.to_int length) in
+			let char_ptr = CArray.start char_array in
 			check_error (fun () -> Foreign.get_process_name pid char_ptr length);
 			Util.string_of_char_array char_array
 	end
@@ -586,8 +586,8 @@ module Make (L : (sig val library : Dl.library end)) : API = struct
 
 		(* Generic calls for common getter patterns. *)
 		let get_string_generic ~device ~foreign_fn ~length =
-			let char_array = Array.make char length in
-			let char_ptr = Array.start char_array in
+			let char_array = CArray.make char length in
+			let char_ptr = CArray.start char_array in
 			check_error (fun () -> foreign_fn device char_ptr (UInt.of_int length));
 			Util.string_of_char_array char_array
 
