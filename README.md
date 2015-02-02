@@ -5,7 +5,15 @@ OCaml bindings to the [NVIDIA Management Library](https://developer.nvidia.com/n
 
 Commands mirror the NVML API - see the original
 [API reference](http://developer.download.nvidia.com/assets/cuda/files/CUDADownloads/NVML/nvml.pdf)
-for more information.
+(PDF) for more information.
+
+So far I've only implemented commands which I can test on the hardware to which I have access, which comprises:
+
+* Quadro FX 580
+* GRID K1
+* GRID K2
+
+If you have access to hardware which would allow testing of currently unimplemented commands, please get in touch!
 
 Build requirements:
 
