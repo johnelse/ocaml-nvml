@@ -411,7 +411,7 @@ module Make (L : (sig val library : Dl.library end)) : API = struct
 			view ~read:of_internal ~write:to_internal internal_t
 
 		let init = {
-			bus_id = String.create nvml_device_pci_bus_id_buffer_size;
+			bus_id = Bytes.create nvml_device_pci_bus_id_buffer_size;
 			domain = UInt.of_int 0;
 			bus = UInt.of_int 0;
 			device = UInt.of_int 0;
