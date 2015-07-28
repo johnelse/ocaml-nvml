@@ -9,4 +9,7 @@ install: [
 remove: [
   [make "PREFIX=%{prefix}%" "uninstall"]
 ]
-depends: ["ctypes"]
+depends: [
+  "ctypes"
+  "oasis"
+]
