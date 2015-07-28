@@ -1,8 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: db1b6e76e88042eacf59341235c86282)
-# Ignore VCS directories, you can use the same kind of rule outside 
-# OASIS_START/STOP if you want to exclude directories that contains 
+# DO NOT EDIT (digest: 6a23c8de5485837fad1c75d29bb0cfc3)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
+true: annot, bin_annot
 <**/.svn>: -traverse
 <**/.svn>: not_hygienic
 ".bzr": -traverse
@@ -16,19 +17,19 @@
 # Library nvml
 "lib/nvml.cmxs": use_nvml
 <lib/nvml.{cma,cmxa}>: oasis_library_nvml_byte
-<lib/*.ml{,i}>: oasis_library_nvml_byte
+<lib/*.ml{,i,y}>: oasis_library_nvml_byte
 <lib/nvml.{cma,cmxa}>: oasis_library_nvml_native
-<lib/*.ml{,i}>: oasis_library_nvml_native
-<lib/*.ml{,i}>: pkg_ctypes.foreign
+<lib/*.ml{,i,y}>: oasis_library_nvml_native
+<lib/*.ml{,i,y}>: pkg_ctypes.foreign
 # Executable functional_test
 "test/functional_test.byte": oasis_executable_functional_test_byte
-<test/*.ml{,i}>: oasis_executable_functional_test_byte
+<test/*.ml{,i,y}>: oasis_executable_functional_test_byte
 "test/functional_test.byte": oasis_executable_functional_test_native
-<test/*.ml{,i}>: oasis_executable_functional_test_native
-"test/functional_test.byte": use_nvml
+<test/*.ml{,i,y}>: oasis_executable_functional_test_native
 "test/functional_test.byte": pkg_ctypes
 "test/functional_test.byte": pkg_ctypes.foreign
-<test/*.ml{,i}>: use_nvml
-<test/*.ml{,i}>: pkg_ctypes
-<test/*.ml{,i}>: pkg_ctypes.foreign
+"test/functional_test.byte": use_nvml
+<test/*.ml{,i,y}>: pkg_ctypes
+<test/*.ml{,i,y}>: pkg_ctypes.foreign
+<test/*.ml{,i,y}>: use_nvml
 # OASIS_STOP

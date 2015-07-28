@@ -1,4 +1,4 @@
-OASISFormat:     0.3
+OASISFormat:     0.4
 Name:            nvml
 Version:         0.1.0
 Synopsis:        OCaml bindings to the NVIDIA management library
@@ -6,7 +6,7 @@ License:         MIT
 Authors:         John Else
 Copyrights:      (C) 2013 John Else
 BuildTools:      ocamlbuild
-Plugins:         META (0.3)
+Plugins:         META (0.4)
 
 Library nvml
   Path:          lib
