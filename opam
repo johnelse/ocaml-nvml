@@ -13,4 +13,5 @@ depends: [
   "ctypes"
   "ctypes-foreign"
   "oasis"
+  "rpc"
 ]
