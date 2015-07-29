@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: c4113d2c4ca210df23e566eb99fe04d4)
+# DO NOT EDIT (digest: 3796155e683330d2bc90b923b5f7925d)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -22,6 +22,7 @@ true: annot, bin_annot
 <lib/*.ml{,i,y}>: oasis_library_nvml_native
 <lib/*.ml{,i,y}>: pkg_bytes
 <lib/*.ml{,i,y}>: pkg_ctypes.foreign
+<lib/*.ml{,i,y}>: pkg_rpclib.syntax
 # Executable functional_test
 "test/functional_test.byte": oasis_executable_functional_test_byte
 <test/*.ml{,i,y}>: oasis_executable_functional_test_byte
@@ -29,8 +30,10 @@ true: annot, bin_annot
 <test/*.ml{,i,y}>: oasis_executable_functional_test_native
 "test/functional_test.byte": pkg_bytes
 "test/functional_test.byte": pkg_ctypes.foreign
+"test/functional_test.byte": pkg_rpclib.syntax
 "test/functional_test.byte": use_nvml
 <test/*.ml{,i,y}>: pkg_bytes
 <test/*.ml{,i,y}>: pkg_ctypes.foreign
+<test/*.ml{,i,y}>: pkg_rpclib.syntax
 <test/*.ml{,i,y}>: use_nvml
 # OASIS_STOP

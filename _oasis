@@ -10,7 +10,7 @@ Plugins:         META (0.4)
 
 Library nvml
   Path:          lib
-  BuildDepends:  bytes, ctypes.foreign
+  BuildDepends:  bytes, ctypes.foreign, rpclib.syntax
   Findlibname:   nvml
   ByteOpt:       -bin-annot
   NativeOpt:     -bin-annot
