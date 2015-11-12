@@ -3,7 +3,7 @@ open Foreign
 open Unsigned
 
 let open_library () =
-	Dl.dlopen ~filename:"libnvidia-ml.so" ~flags:[Dl.RTLD_LAZY]
+  Dl.dlopen ~filename:"libnvidia-ml.so" ~flags:[Dl.RTLD_LAZY]
 
 module type API = sig
   type error =
